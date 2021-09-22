@@ -51,10 +51,10 @@ public class OrderService {
         double average = averagePerOrders(orders);
 
         //top 3 branduri
-        String[] topBrands = top3Brands(orders);
+        List<String> topBrands = top3Brands(orders);
 
         //top 10 produse
-
+        List<Long> top10Products = top10Products(orders);
     }
 
     //Mapping each json object to Order model
@@ -80,8 +80,6 @@ public class OrderService {
         return result;
     }
 
-    //aflu numarul de produse pastrate pentru fiecare comanda(o comanda = 5 produse)
-    // si impart la numarul total de comenzi
     private double averagePerOrders(List<Order> orders){
         double numberOfKeptProducts = 0;
         double numberOfOrders = 0;
@@ -103,28 +101,70 @@ public class OrderService {
         return numberOfKeptProducts/numberOfOrders;
     }
 
-    private String[] top3Brands(List<Order> orders){
-        List<Order> soldOrders = orders
-                .stream()
-                .filter(item -> item.getStatus().equals("VANDUT"))
-                .collect(Collectors.toList());
+    private List<String> top3Brands(List<Order> orders){
+        Map<Long, Double> probability = soldProbability(orders);
 
-        Map<String, Long> group  = soldOrders.stream()
-                .map(Order::getBrand)
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-
-        String top3Brands = group
+        List<Long> top3Product = probability
                 .entrySet()
                 .stream()
-                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .sorted(Map.Entry.<Long, Double>comparingByValue().reversed())
                 .limit(3)
                 .map(Map.Entry::getKey)
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.toList());
 
-        return top3Brands.split(" ");
+        List<String> top3Brands = new ArrayList<>();
+
+        for(Long item: top3Product){
+            top3Brands.add(orders
+                    .stream()
+                    .filter(order -> order.getProductId().equals(item))
+                    .map(Order::getBrand)
+                    .findAny()
+                    .orElseThrow());
+        }
+
+        return top3Brands;
     }
 
-    private void top10Products(){
+    private List<Long> top10Products(List<Order> orders){
+        Map<Long, Double> probability = soldProbability(orders);
 
+        return probability
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.<Long, Double>comparingByValue().reversed())
+                .limit(10)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    public Map<Long, Double> soldProbability(List<Order> orders){
+        Map<Long, Long> soldProducts  = orders
+                .stream()
+                .filter(item -> item.getStatus().equals("VANDUT"))
+                .map(Order::getProductId)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        Map<Long, Long> numberOfOrders = orders
+                .stream()
+                .map(Order::getProductId)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        Map<Long, Double> soldProbability = new HashMap<>();
+
+        for(Map.Entry<Long, Long> entry: soldProducts.entrySet()){
+            Long product = entry.getKey();
+            Long numberOfSold = entry.getValue();
+            Long noOrders = numberOfOrders.get(product);
+
+            double probability = 0;
+
+            if(noOrders > 5)
+                probability = (double)numberOfSold/noOrders;
+
+            soldProbability.put(product, probability);
+        }
+
+        return soldProbability;
     }
 }
