@@ -26,7 +26,7 @@ public class OrderMetricsRepositoryImplementation {
         this.orderService = orderService;
     }
 
-    @Scheduled(initialDelay = 1000L, fixedDelay = 5000L)
+    @Scheduled(initialDelay = 1000L, fixedDelayString = "PT30M")//run every 30min, you can try with fixedDelay=3000L => 3s to see the diference
     public void saveMetrics() throws ClassNotFoundException, IOException, URISyntaxException {
         Metric newMetric = orderService.calculateMetrics();
         Metric existingMetric;
