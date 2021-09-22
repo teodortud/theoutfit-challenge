@@ -13,13 +13,15 @@ import java.net.URISyntaxException;
 
 @Service
 public class HttpService {
+    private final static String PASSWORD = "&aBWaR&r[12x)I9Q2mhi9y4W";
+
     public CloseableHttpResponse getHttpResponse(String uriPath) throws IOException, URISyntaxException {
         CloseableHttpClient client = HttpClients.createDefault();
 
         URI uri = new URIBuilder(uriPath).build();
 
         HttpGet request = new HttpGet(uri);
-        request.addHeader("API_KEY", "&aBWaR&r[12x)I9Q2mhi9y4W");
+        request.addHeader("API_KEY", PASSWORD);
         request.addHeader("Content-Type", "application/json");
 
         return client.execute(request);

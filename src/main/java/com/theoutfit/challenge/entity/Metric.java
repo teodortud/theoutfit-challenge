@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -17,9 +18,10 @@ import java.util.List;
 public class Metric {
     @Id
     private String id;
-
     private Double averagePerOrder;
     private List<String> top3Brands;
     private List<Long> top10Products;
 
+    //l-am adaugat sa vad update-ul in baza de date
+    private LocalDateTime dateTime;
 }

@@ -4,7 +4,6 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoDatabase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -20,9 +19,7 @@ public class MongoConfig {
                 .applyConnectionString(connectionString)
                 .build();
 
-        MongoClient mongoClient = MongoClients.create(mongoClientSettings);
-
-        return mongoClient;
+        return MongoClients.create(mongoClientSettings);
     }
 
     @Bean

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class OrderService {
+    private final static String UNIQUE_ID = "uniqueId";
     private final HttpService httpService;
     private final String uriPath = "https://op-app.azurewebsites.net/api/dev-test/get-products";
 
@@ -58,9 +60,11 @@ public class OrderService {
         List<Long> topProducts = top10Products(orders);
 
         Metric metric = new Metric();
+        metric.setId(UNIQUE_ID);
         metric.setAveragePerOrder(average);
         metric.setTop3Brands(topBrands);
         metric.setTop10Products(topProducts);
+        metric.setDateTime(LocalDateTime.now());
 
         return metric;
     }
