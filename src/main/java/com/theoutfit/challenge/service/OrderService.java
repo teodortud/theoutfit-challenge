@@ -3,6 +3,7 @@ package com.theoutfit.challenge.service;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theoutfit.challenge.entity.Metric;
 import com.theoutfit.challenge.entity.Order;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class OrderService {
         this.httpService = httpService;
     }
 
-    public void calculateMetrics() throws IOException, URISyntaxException, ClassNotFoundException {
+    public Metric calculateMetrics() throws IOException, URISyntaxException, ClassNotFoundException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -54,7 +55,14 @@ public class OrderService {
         List<String> topBrands = top3Brands(orders);
 
         //top 10 produse
-        List<Long> top10Products = top10Products(orders);
+        List<Long> topProducts = top10Products(orders);
+
+        Metric metric = new Metric();
+        metric.setAveragePerOrder(average);
+        metric.setTop3Brands(topBrands);
+        metric.setTop10Products(topProducts);
+
+        return metric;
     }
 
     //Mapping each json object to Order model

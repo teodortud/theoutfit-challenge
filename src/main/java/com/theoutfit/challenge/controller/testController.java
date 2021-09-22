@@ -1,6 +1,6 @@
 package com.theoutfit.challenge.controller;
 
-import com.theoutfit.challenge.service.OrderService;
+import com.theoutfit.challenge.repository.OrderMetricsRepositoryImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,10 +11,10 @@ import java.net.URISyntaxException;
 @RestController
 public class testController {
     @Autowired
-    OrderService orderService;
+    OrderMetricsRepositoryImplementation orderRepository;
 
     @GetMapping("test")
     public void test() throws ClassNotFoundException, IOException, URISyntaxException {
-        orderService.calculateMetrics();
+        orderRepository.saveMetrics();
     }
 }

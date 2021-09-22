@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
@@ -12,11 +13,13 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Document("metrics")
 public class Metric {
     @Id
     private String id;
 
-    private String averagePerOrder;
+    private Double averagePerOrder;
     private List<String> top3Brands;
     private List<Long> top10Products;
+
 }

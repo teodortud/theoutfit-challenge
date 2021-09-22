@@ -2,6 +2,8 @@ package com.theoutfit.challenge.repository;
 
 import com.theoutfit.challenge.entity.Metric;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Service;
 
-public interface OrderMetricsRepository extends MongoRepository<Metric, String> {
+@Service
+public interface OrderMetricsRepository extends MongoRepository<Metric, Double> {
 }
